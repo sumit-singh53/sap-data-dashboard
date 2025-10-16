@@ -1,0 +1,16 @@
+date,region,product,sales,quantity,revenue
+2024-01-01,North America,Product A,1250,25,31250
+2024-01-01,Europe,Product B,980,20,19600
+2024-01-01,Asia,Product C,1500,30,45000
+2024-01-02,North America,Product B,1100,22,24200
+2024-01-02,Europe,Product A,850,17,14450
+2024-01-02,Asia,Product C,1300,26,33800
+2024-01-03,North America,Product C,1400,28,39200
+2024-01-03,Europe,Product B,920,18,16560
+2024-01-03,Asia,Product A,1150,23,26450
+2024-01-04,North America,Product A,1350,27,36450
+2024-01-04,Europe,Product C,1050,21,31500
+2024-01-04,Asia,Product B,1200,24,28800
+2024-01-05,North America,Product B,1180,24,28320
+2024-01-05,Europe,Product A,900,18,16200
+2024-01-05,Asia,Product C,1450,29,42050
