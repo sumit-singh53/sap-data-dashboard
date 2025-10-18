@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP Dashboard - Business Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist@2.26.0/plotly.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="sap-styles.css">
+</head>
+<body class="light-theme">
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-chart-network"></i>
+                <span>SAP Dashboard</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item active">
+                <a href="#overview" class="nav-link" data-section="overview">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Overview</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#analytics" class="nav-link" data-section="analytics">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#reports" class="nav-link" data-section="reports">
+                    <i class="fas fa-file-chart-column"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#insights" class="nav-link" data-section="insights">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Insights</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header with Filters -->
+        <header class="header">
+            <div class="header-left">
+                <h1 class="page-title">Business Intelligence Dashboard</h1>
+                <p class="page-subtitle">Real-time analytics and insights</p>
+            </div>
+            <div class="header-right">
+                <div class="filters-container">
+                    <select id="yearFilter" class="filter-select">
+                        <option value="">All Years</option>
+                    </select>
+                    <select id="regionFilter" class="filter-select">
+                        <option value="">All Regions</option>
+                    </select>
+                    <select id="departmentFilter" class="filter-select">
+                        <option value="">All Departments</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" id="refreshBtn">
+                    <i class="fas fa-refresh"></i>
+                    Refresh
+                </button>
+            </div>
+        </header>  
+      <!-- Overview Section -->
+        <section id="overview" class="section active">
+            <!-- KPI Cards -->
+            <div class="kpi-section">
+                <div class="kpi-grid">
+                    <div class="kpi-card glass-card" data-kpi="revenue">
+                        <div class="kpi-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-title">Total Revenue</h3>
+                            <div class="kpi-value" id="totalRevenue">$0</div>
+                            <div class="kpi-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="revenueTrend">0%</span>
+                            </div>
+                        </div>
+                        <div class="kpi-sparkline" id="revenueSparkline"></div>
+                    </div>
+
+                    <div class="kpi-card glass-card" data-kpi="profit">
+                        <div class="kpi-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-title">Total Profit</h3>
+                            <div class="kpi-value" id="totalProfit">$0</div>
+                            <div class="kpi-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="profitTrend">0%</span>
+                            </div>
+                        </div>
+                        <div class="kpi-sparkline" id="profitSparkline"></div>
+                    </div>
+
+                    <div class="kpi-card glass-card" data-kpi="expenses">
+                        <div class="kpi-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-title">Total Expenses</h3>
+                            <div class="kpi-value" id="totalExpenses">$0</div>
+                            <div class="kpi-trend negative">
+                                <i class="fas fa-arrow-down"></i>
+                                <span id="expensesTrend">0%</span>
+                            </div>
+                        </div>
+                        <div class="kpi-sparkline" id="expensesSparkline"></div>
+                    </div>
+
+                    <div class="kpi-card glass-card" data-kpi="roi">
+                        <div class="kpi-icon">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-title">Average ROI</h3>
+                            <div class="kpi-value" id="avgROI">0%</div>
+                            <div class="kpi-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="roiTrend">0%</span>
+                            </div>
+                        </div>
+                        <div class="kpi-sparkline" id="roiSparkline"></div>
+                    </div>
+
+                    <div class="kpi-card glass-card" data-kpi="employees">
+                        <div class="kpi-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-title">Total Employees</h3>
+                            <div class="kpi-value" id="totalEmployees">0</div>
+                            <div class="kpi-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="employeesTrend">0%</span>
+                            </div>
+                        </div>
+                        <div class="kpi-sparkline" id="employeesSparkline"></div>
+                    </div>
+
+                    <div class="kpi-card glass-card" data-kpi="efficiency">
+                        <div class="kpi-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-title">Expense Efficiency</h3>
+                            <div class="kpi-value" id="expenseEfficiency">0x</div>
+                            <div class="kpi-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="efficiencyTrend">0%</span>
+                            </div>
+                        </div>
+                        <div class="kpi-sparkline" id="efficiencySparkline"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Charts -->
+            <div class="charts-section">
+                <div class="charts-grid">
+                    <div class="chart-container glass-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Revenue Trend Analysis</h3>
+                            <div class="chart-actions">
+                                <button class="chart-action-btn" data-action="fullscreen">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <div id="revenueTrendChart"></div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container glass-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Department Performance</h3>
+                            <div class="chart-actions">
+                                <button class="chart-action-btn" data-action="fullscreen">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-content">
+                            <div id="departmentChart"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Monthly Summary Chart -->
+                <div class="chart-container glass-card">
+                    <div class="chart-header">
+                        <div class="chart-title">
+                            <h3>Monthly Summary</h3>
+                            <p>Month-over-month performance analysis</p>
+                        </div>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn" data-action="fullscreen" title="Expand">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <div id="monthlyChart"></div>
+                    </div>
+                </div>
+            </div>
+        </section> 
+       <!-- Analytics Section -->
+        <section id="analytics" class="section">
+            <div class="analytics-header">
+                <h2 class="section-title">Advanced Analytics</h2>
+                <p class="section-subtitle">Deep dive into business metrics and trends</p>
+            </div>
+            
+            <div class="charts-grid">
+                <div class="chart-container glass-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Regional Performance</h3>
+                        <div class="chart-actions">
+                            <select class="chart-filter" id="regionMetricFilter">
+                                <option value="revenue">Revenue</option>
+                                <option value="profit">Profit</option>
+                                <option value="roi">ROI</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <div id="regionalChart"></div>
+                    </div>
+                </div>
+
+                <div class="chart-container glass-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Quarterly Trends</h3>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn" data-action="download">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <div id="quarterlyChart"></div>
+                    </div>
+                </div>
+
+                <div class="chart-container glass-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Profit Margin Analysis</h3>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn" data-action="fullscreen">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <div id="profitMarginChart"></div>
+                    </div>
+                </div>
+
+                <div class="chart-container glass-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Market Share Distribution</h3>
+                        <div class="chart-actions">
+                            <select class="chart-filter" id="marketShareFilter">
+                                <option value="department">By Department</option>
+                                <option value="region">By Region</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <div id="marketShareChart"></div>
+                    </div>
+                </div>
+
+                <div class="chart-container glass-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">YTD Performance Comparison</h3>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn" data-action="refresh">
+                                <i class="fas fa-refresh"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <div id="ytdChart"></div>
+                    </div>
+                </div>
+
+                <div class="chart-container glass-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Advanced KPIs Heatmap</h3>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn" data-action="fullscreen">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <div id="kpiHeatmap"></div>
+                    </div>
+                </div>
+            </div>
+        </section> 
+       <!-- Reports Section -->
+        <section id="reports" class="section">
+            <div class="reports-header">
+                <h2 class="section-title">Report Generator</h2>
+                <p class="section-subtitle">Generate comprehensive business reports</p>
+            </div>
+            
+            <div class="report-generator">
+                <div class="report-config glass-card">
+                    <h3>Report Configuration</h3>
+                    <div class="config-grid">
+                        <div class="config-group">
+                            <label>Report Type</label>
+                            <select id="reportType">
+                                <option value="executive">Executive Summary</option>
+                                <option value="financial">Financial Analysis</option>
+                                <option value="operational">Operational Report</option>
+                                <option value="comprehensive">Comprehensive Report</option>
+                            </select>
+                        </div>
+                        <div class="config-group">
+                            <label>Time Period</label>
+                            <select id="reportPeriod">
+                                <option value="current-quarter">Current Quarter</option>
+                                <option value="current-year">Current Year</option>
+                                <option value="last-quarter">Last Quarter</option>
+                                <option value="last-year">Last Year</option>
+                                <option value="all-time">All Time</option>
+                            </select>
+                        </div>
+                        <div class="config-group">
+                            <label>Include Sections</label>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" checked> KPI Summary</label>
+                                <label><input type="checkbox" checked> Revenue Analysis</label>
+                                <label><input type="checkbox" checked> Department Performance</label>
+                                <label><input type="checkbox" checked> Regional Breakdown</label>
+                                <label><input type="checkbox"> Detailed Charts</label>
+                            </div>
+                        </div>
+                        <div class="config-actions">
+                            <button class="btn btn-secondary" id="previewReport">
+                                <i class="fas fa-eye"></i>
+                                Preview
+                            </button>
+                            <button class="btn btn-primary" id="generatePDF">
+                                <i class="fas fa-file-pdf"></i>
+                                Generate PDF
+                            </button>
+                            <button class="btn btn-primary" id="exportCSV">
+                                <i class="fas fa-file-csv"></i>
+                                Export CSV
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-preview glass-card">
+                    <h3>Report Preview</h3>
+                    <div id="reportPreview" class="report-content">
+                        <div class="report-placeholder">
+                            <i class="fas fa-file-alt"></i>
+                            <p>Select report configuration and click Preview to see report content</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Reports -->
+            <div class="quick-reports">
+                <h3>Quick Reports</h3>
+                <div class="quick-reports-grid">
+                    <div class="quick-report-card glass-card" data-report="monthly">
+                        <div class="report-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h4>Monthly Summary</h4>
+                        <p>Current month performance overview</p>
+                        <button class="btn btn-outline">Generate</button>
+                    </div>
+                    <div class="quick-report-card glass-card" data-report="quarterly">
+                        <div class="report-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h4>Quarterly Analysis</h4>
+                        <p>Detailed quarterly business analysis</p>
+                        <button class="btn btn-outline">Generate</button>
+                    </div>
+                    <div class="quick-report-card glass-card" data-report="annual">
+                        <div class="report-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h4>Annual Report</h4>
+                        <p>Comprehensive yearly performance</p>
+                        <button class="btn btn-outline">Generate</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Insights Section -->
+        <section id="insights" class="section">
+            <div class="insights-header">
+                <h2 class="section-title">Business Insights</h2>
+                <p class="section-subtitle">AI-powered insights and recommendations</p>
+            </div>
+            
+            <div class="insights-grid">
+                <div class="insight-card glass-card positive">
+                    <div class="insight-icon">
+                        <i class="fas fa-arrow-trend-up"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h4>Revenue Growth Opportunity</h4>
+                        <p>Cloud department shows 23% growth potential based on market trends</p>
+                        <div class="insight-value">+$2.3M potential</div>
+                    </div>
+                </div>
+                
+                <div class="insight-card glass-card warning">
+                    <div class="insight-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h4>Cost Optimization Alert</h4>
+                        <p>Hardware department expenses increased 15% compared to last quarter</p>
+                        <div class="insight-value">Review recommended</div>
+                    </div>
+                </div>
+                
+                <div class="insight-card glass-card info">
+                    <div class="insight-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h4>Market Expansion</h4>
+                        <p>South America region shows untapped potential for AI services</p>
+                        <div class="insight-value">New opportunity</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Loading SAP Dashboard...</p>
+        </div>
+    </div>
+
+    <!-- Fullscreen Modal -->
+    <div class="fullscreen-modal" id="fullscreenModal">
+        <div class="fullscreen-content">
+            <div class="fullscreen-header">
+                <h3 class="fullscreen-title" id="fullscreenTitle">Chart View</h3>
+                <button class="fullscreen-close" id="fullscreenClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="fullscreen-chart" id="fullscreenChart"></div>
+        </div>
+    </div>
+
+    <script src="sap-dashboard.js"></script>
+</body>
+</html>
